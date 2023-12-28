@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"net/http"
 	"server-go/server-go/game"
 	"time"
@@ -12,12 +11,14 @@ import (
 
 var state = game.State{}
 
+var connections = []*gin.Context{}
+
 func main() {
 	r := gin.Default()
 
 	r.Use(cors.Default())
 
-	updatesChan := newUpdatesChan()
+	startGame()
 
 	r.POST("/register", func(c *gin.Context) {
 		var reg game.RegistrationRequest
@@ -33,32 +34,32 @@ func main() {
 			Y:       500,
 			IsAlive: true,
 			HasFlag: false,
-			Team:    game.Team(reg.Team),
+			Name:    reg.Name,
+			Team:    reg.Team,
 		})
 		c.JSON(http.StatusOK, game.RegistrationResponse{Id: playerId, RegistrationRequest: reg})
 	})
 
 	r.GET("/events", func(c *gin.Context) {
-		c.Stream(func(w io.Writer) bool {
-			// Stream message to client from message channel
-			state := <-updatesChan
-			c.SSEvent("message", state)
-			return true
-		})
+		connections = append(connections, c)
+		<-c.Writer.CloseNotify()
 	})
 
 	r.Run(":5000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
-func newUpdatesChan() chan game.State {
-	c := make(chan game.State)
-
+func startGame() {
 	go func() {
 		for {
-			c <- state
-			time.Sleep(time.Millisecond * 50)
+			time.Sleep(time.Millisecond * 100)
+			broadcastState(state)
 		}
 	}()
+}
 
-	return c
+func broadcastState(s game.State) {
+	for _, c := range connections {
+		c.SSEvent("state", s)
+		c.Writer.Flush()
+	}
 }

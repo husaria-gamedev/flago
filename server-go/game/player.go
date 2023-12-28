@@ -1,16 +1,17 @@
 package game
 
 type Player struct {
-	X int
-	Y int
+	X       int
+	Y       int
 	IsAlive bool
 	HasFlag bool
-	Team Team
+	Name    string
+	Team    Team
 }
 
 type Team string
 
 const (
-	TeamRed = "Red"
-	TeamBlue = "Blue"
+	TeamRed  Team = "Red"
+	TeamBlue Team = "Blue"
 )
