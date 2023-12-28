@@ -1,4 +1,28 @@
 body {
     background: #FF5757;
+}
+#app{
 
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.next {
+    font-family: 'Acme', sans-serif;
+    border-radius: 25px;
+    background: #38B6FF;
+    padding: 2% 5%;
+    color: white;
+    border: none;
+}
+input {
+    font-family: 'Acme', sans-serif;
+    margin: 100px;
+    border-radius: 25px;
+    padding: 2% 5%;
+    color: black;
+    border: none;
 }
