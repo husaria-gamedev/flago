@@ -1,28 +1,56 @@
 body {
-    background: #FF5757;
+  background: #ff5757;
 }
-#app{
-
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+#app {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 }
 
+input {
+  font-family: "Acme", sans-serif;
+  margin: 100px;
+  border-radius: 25px;
+  padding: 2% 5%;
+  color: black;
+  border: none;
+  font-size: 32px;
+}
 
 .next {
-    font-family: 'Acme', sans-serif;
-    border-radius: 25px;
-    background: #38B6FF;
-    padding: 2% 5%;
-    color: white;
-    border: none;
+  font-size: 32px;
+  font-family: "Acme", sans-serif;
+  border-radius: 25px;
+  background: #38b6ff;
+  padding: 20px 50px;
+  color: white;
+  border: none;
 }
-input {
-    font-family: 'Acme', sans-serif;
-    margin: 100px;
-    border-radius: 25px;
-    padding: 2% 5%;
-    color: black;
-    border: none;
+
+.team {
+
+  cursor: pointer;
+  font-family: "Acme", sans-serif;
+  margin: 100px;
+  border-radius: 25px;
+  padding: 10%;
+  color: black;
+  border: none;
+
+  font-size: 32px;
+}
+.team img {
+    transition: cubic-bezier(0.165, 0.84, 0.44, 1) 0.4s;
+}
+.team.active img {
+  transform: scale(1.5);
+  border: inset 2px;
+  background-color: #c3c3c3;
+}
+.flag_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }

@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify, Response
+import flask
 from flask_cors import CORS
-from flask_socketio import SocketIO
 from dataclasses import dataclass
+import queue
+import time
+from threading import Thread
 
 app = Flask(__name__)
 CORS(app) 
-socket = SocketIO(app)
 
+listeners = []
 
 @dataclass
 class Player:
@@ -15,6 +18,7 @@ class Player:
     is_alive: bool
     has_flag: bool
     team: str
+    name: str
 
 
 @dataclass
@@ -30,21 +34,41 @@ def register() -> Response:
     assert content.get("name"), "Name cannot be empty"
 
     player_id = len(state.players)
-    state.players.append(Player(500, 500, True, False, content["team"]))
+    state.players.append(Player(500, 500, True, False, content["team"], content["name"]))
 
     return jsonify({"id": player_id, **content})
 
 
-@socket.on("connect")
-def connect() -> None:
-    print("[CLIENT CONNECTED]:", request.sid)
+@app.route('/events', methods=['GET'])
+def listen():
+    def stream():
+        listeners.append(messages := queue.Queue(maxsize=100))
+        while True:
+            msg = messages.get()
+            yield msg
+    return flask.Response(stream(), mimetype='text/event-stream')
 
+def broadcast(msg):
+    for i in reversed(range(len(listeners))):
+        try:
+            listeners[i].put_nowait(msg)
+        except queue.Full:
+            del listeners[i]
 
-@socket.on("disconnect")
-def disconn():
-    print("[CLIENT DISCONNECTED]:", request.sid)
+def format_sse(data: str, event=None) -> str:
+    msg = f'data: {data}\n\n'
+    if event is not None:
+        msg = f'event: {event}\n{msg}'
+    return msg
 
+def keep_broadcasting():
+    while True:
+        time.sleep(0.1)
+        msg = format_sse(data=str(state), event="state")
+        broadcast(msg=msg)
 
 if __name__ == "__main__":
     state = State([], 0, 0)
-    socket.run(app)
+    thread = Thread(target=keep_broadcasting)
+    thread.start()
+    app.run()
