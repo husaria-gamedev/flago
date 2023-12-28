@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"server-go/server-go/game"
+	"server-go/game"
 	"time"
 
 	"github.com/gin-contrib/cors"
