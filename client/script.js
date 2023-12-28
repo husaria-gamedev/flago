@@ -21,6 +21,10 @@ function chooseTeam(t) {
 }
 
 function play() {
-    fetch("http://127.0.0.1:5000/register", {method: "POST", body: JSON.stringify({username, team}), mode: "cors"})
+    fetch("http://127.0.0.1:5000/register", {
+        method: "POST", 
+        body: JSON.stringify({username, team}), 
+        headers: {"Content-Type": "application/json"}
+    })
     console.log(username, team)
 }
