@@ -1,5 +1,5 @@
 const appContainer = document.getElementById("app");
-let username, team;
+let name, team;
 appContainer.innerHTML = `
 <img src="assets/logo.png" style="width: 500px;"/><br/>
 <input type="text" id="username"/>
@@ -7,7 +7,7 @@ appContainer.innerHTML = `
 `;
 
 function test() {
-    username = document.getElementById("username").value;
+    name = document.getElementById("username").value;
     appContainer.innerHTML = `
     <img src="assets/logo.svg" />
     <button onclick="chooseTeam('Red')">Red</button>
@@ -23,8 +23,8 @@ function chooseTeam(t) {
 function play() {
     fetch("http://127.0.0.1:5000/register", {
         method: "POST", 
-        body: JSON.stringify({username, team}), 
+        body: JSON.stringify({name, team}), 
         headers: {"Content-Type": "application/json"}
     })
-    console.log(username, team)
+    console.log(name, team)
 }
