@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, Response
+from flask_cors import CORS
 from flask_socketio import SocketIO
 from dataclasses import dataclass
 
 app = Flask(__name__)
+CORS(app) 
 socket = SocketIO(app)
 
 
@@ -20,7 +22,6 @@ class State:
     players: list[Player]
     blue_points: int
     red_points: int
-
 
 @app.route("/register", methods=["POST"])
 def register() -> Response:

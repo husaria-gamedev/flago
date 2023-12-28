@@ -1,18 +1,20 @@
 const appContainer = document.getElementById("app");
-let username, team;
+let name, team;
 appContainer.innerHTML = `
-<img src="assets/logo.png" style="width: 500px;"/><br/>
-<input type="text" id="username"/>
-<button onclick="test()">Next</button>
+<img src="assets/logo.png" style="width: 250px;"/><br/>
+<input placeholder="Type your name" type="text" id="username"/><br/>
+<button class="next" onclick="next()">Next</button>
 `;
 
-function test() {
-    username = document.getElementById("username").value;
+function next() {
+    name = document.getElementById("username").value;
     appContainer.innerHTML = `
-    <img src="assets/logo.svg" />
-    <button onclick="chooseTeam('red')">Red</button>
-    <button onclick="chooseTeam('blue')">Blue</button><br/>
-    <button onclick="play()">Play</button>
+    <img src="assets/logo.png" style="width: 250px;"/><br/>
+    <div>
+        <button onclick="chooseTeam('Red')">Red</button>
+        <button onclick="chooseTeam('Blue')">Blue</button>
+    <div>
+    <button class="next" onclick="play()">Play</button>
     `;
 }
 
@@ -23,10 +25,10 @@ function chooseTeam(t) {
 function play() {
     fetch("http://127.0.0.1:5000/register", {
         method: "POST", 
-        body: JSON.stringify({username, team}), 
+        body: JSON.stringify({name, team}), 
         headers: {"Content-Type": "application/json"}
     })
-    console.log(username, team)
+    console.log(name, team)
 }
 
 const source = new EventSource("http://localhost:5000/events")
