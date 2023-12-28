@@ -7,32 +7,41 @@ appContainer.innerHTML = `
 `;
 
 function next() {
-    name = document.getElementById("username").value;
-    appContainer.innerHTML = `
+  name = document.getElementById("username").value;
+  appContainer.innerHTML = `
     <img src="assets/logo.png" style="width: 350px;"/><br/>
     <div class="flag_container">
-        <button class="team" onclick="chooseTeam('Red')"><img src="assets/red_flag.svg"/></button>
-        <button class="team" onclick="chooseTeam('Blue')"><img src="assets/blue_flag.svg"/></button>
+        <button class="team" id="redButton" onclick="chooseTeam('Red')">
+        <img src="assets/red_flag.svg" alt="Red Flag"/>
+        </button>
+        <button class="team" id="blueButton" onclick="chooseTeam('Blue')">
+        <img src="assets/blue_flag.svg" alt="Blue Flag"/>
+        </button>
     </div><br/>
     <button class="next" onclick="play()">Play</button>
     `;
 }
 
 function chooseTeam(t) {
-    team = t;
+  document.getElementById("redButton").classList.remove("active");
+  document.getElementById("blueButton").classList.remove("active");
+
+  // Add active class to the clicked button
+  event.currentTarget.classList.add("active");
+  team = t;
 }
 
 function play() {
-    fetch("http://127.0.0.1:5000/register", {
-        method: "POST", 
-        body: JSON.stringify({name, team}), 
-        headers: {"Content-Type": "application/json"}
-    })
-    console.log(name, team)
+  fetch("http://127.0.0.1:5000/register", {
+    method: "POST",
+    body: JSON.stringify({ name, team }),
+    headers: { "Content-Type": "application/json" },
+  });
+  console.log(name, team);
 }
 
-const source = new EventSource("http://localhost:5000/events")
+const source = new EventSource("http://localhost:5000/events");
 
 source.onmessage = (event) => {
-    console.log(event)
+  console.log(event);
 };
