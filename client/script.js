@@ -10,8 +10,8 @@ function test() {
     username = document.getElementById("username").value;
     appContainer.innerHTML = `
     <img src="assets/logo.svg" />
-    <button onclick="chooseTeam('red')">Red</button>
-    <button onclick="chooseTeam('blue')">Blue</button><br/>
+    <button onclick="chooseTeam('Red')">Red</button>
+    <button onclick="chooseTeam('Blue')">Blue</button><br/>
     <button onclick="play()">Play</button>
     `;
 }
