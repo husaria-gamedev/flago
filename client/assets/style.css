@@ -9,15 +9,6 @@ body {
     justify-content: center;
 }
 
-
-.next {
-    font-family: 'Acme', sans-serif;
-    border-radius: 25px;
-    background: #38B6FF;
-    padding: 2% 5%;
-    color: white;
-    border: none;
-}
 input {
     font-family: 'Acme', sans-serif;
     margin: 100px;
@@ -25,4 +16,31 @@ input {
     padding: 2% 5%;
     color: black;
     border: none;
+    font-size: 32px;
+}
+
+.next {
+    font-size: 32px;
+    font-family: 'Acme', sans-serif;
+    border-radius: 25px;
+    background: #38B6FF;
+    padding: 20px 50px;
+    color: white;
+    border: none;
+}
+
+.team {
+    font-family: 'Acme', sans-serif;
+    margin: 100px;
+    border-radius: 25px;
+    padding: 10%;
+    color: black;
+    border: none;
+    font-size: 32px;
+}
+.flag_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
 }

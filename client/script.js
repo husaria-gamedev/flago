@@ -9,11 +9,11 @@ appContainer.innerHTML = `
 function next() {
     name = document.getElementById("username").value;
     appContainer.innerHTML = `
-    <img src="assets/logo.png" style="width: 250px;"/><br/>
-    <div>
-        <button onclick="chooseTeam('Red')">Red</button>
-        <button onclick="chooseTeam('Blue')">Blue</button>
-    <div>
+    <img src="assets/logo.png" style="width: 350px;"/><br/>
+    <div class="flag_container">
+        <button class="team" onclick="chooseTeam('Red')"><img src="assets/red_flag.svg"/></button>
+        <button class="team" onclick="chooseTeam('Blue')"><img src="assets/blue_flag.svg"/></button>
+    </div><br/>
     <button class="next" onclick="play()">Play</button>
     `;
 }
