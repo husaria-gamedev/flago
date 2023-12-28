@@ -1,0 +1,4 @@
+flask_socketio
+black
+flake8
+mypy
