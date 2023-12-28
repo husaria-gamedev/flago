@@ -28,3 +28,9 @@ function play() {
     })
     console.log(username, team)
 }
+
+const source = new EventSource("http://localhost:5000/events")
+
+source.onmessage = (event) => {
+    console.log(event)
+};
