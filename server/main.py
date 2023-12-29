@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response,send_from_directory
+from flask import send_from_directory
+
 import flask
-from flask_cors import CORS
 from dataclasses import dataclass, asdict
 import queue
 import time
@@ -24,7 +25,6 @@ TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
 
 app = Flask(__name__)
-CORS(app) 
 
 @dataclass
 class Player:
@@ -132,11 +132,16 @@ def broadcast_state(state):
         except queue.Full:
             del listeners[i]
 
+
+@app.route('/<path:path>')
+def send_report(path):
+    return send_from_directory('client', path)
+
 ########
 # APP
 ########
 
-
+ 
 if __name__ == "__main__":
     thread = Thread(target=game_loop)
     thread.start()

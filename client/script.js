@@ -1,5 +1,4 @@
 const APP_CONTAINER = document.getElementById("app");
-const SERVER_ADDRESS = "http://localhost:5000";
 let posX = 50;
 let posY = 50;
 let name, team, canvas;
@@ -35,7 +34,7 @@ function chooseTeam(t) {
 }
 
 function play() {
-  fetch(`${SERVER_ADDRESS}/register`, {
+  fetch(`/register`, {
     method: "POST",
     body: JSON.stringify({ team, name }),
     headers: { "Content-Type": "application/json" },
@@ -54,7 +53,7 @@ function play() {
   function handleMouseMove(event) {
     if (rad != direction) {
       direction = rad
-      fetch(`${SERVER_ADDRESS}/set-direction?name=${name}`, {
+      fetch(`/set-direction?name=${name}`, {
         method: "POST",
         body: JSON.stringify({ direction }),
         headers: { "Content-Type": "application/json" },
@@ -72,7 +71,7 @@ function play() {
   setInterval(handleMouseMove, 1000)
 }
 
-const source = new EventSource(`${SERVER_ADDRESS}/events`);
+const source = new EventSource(`/events`);
 
 source.addEventListener("state", (e) => {
   console.log(e.data);
