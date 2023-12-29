@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, Response
 import flask
 from flask_cors import CORS
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import queue
 import time
 from threading import Thread
@@ -124,7 +124,7 @@ def listen():
     return flask.Response(stream(), mimetype='text/event-stream')
 
 def broadcast_state(state):
-    msg = format_sse(data=str(state), event="state")
+    msg = format_sse(data=asdict(state), event="state")
 
     for i in reversed(range(len(listeners))):
         try:

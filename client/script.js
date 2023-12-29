@@ -37,28 +37,39 @@ function chooseTeam(t) {
 function play() {
   fetch(`${SERVER_ADDRESS}/register`, {
     method: "POST",
-    body: JSON.stringify({ name, team }),
+    body: JSON.stringify({ team, name }),
     headers: { "Content-Type": "application/json" },
   });
   const width = 1000;
   const height = 500;
+
   APP_CONTAINER.innerHTML = `
     <canvas id="game" width="${width}px" height="${height}px" style="background: white;">
     
     </canvas>
     `;
-  canvas = document.getElementById("game");
 
+  canvas = document.getElementById("game");
+  let direction = 0, rad = 0;
+  function handleMouseMove(event) {
+    if (rad != direction) {
+      direction = rad
+      fetch(`${SERVER_ADDRESS}/set-direction?name=${name}`, {
+        method: "POST",
+        body: JSON.stringify({ direction }),
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    
+  
+  }
   canvas.addEventListener("mousemove", (event) => {
     let deltaX = event.offsetX - posX;
     let deltaY = event.offsetY - posY;
-    let rad = Math.atan2(deltaY, deltaX);
-    fetch(`${SERVER_ADDRESS}/set-direction?name=${name}`, {
-      method: "POST",
-      body: JSON.stringify({ direction: rad }),
-      headers: { "Content-Type": "application/json" },
-    });
+    rad = Math.atan2(deltaY, deltaX);
+
   });
+  setInterval(handleMouseMove, 1000)
 }
 
 const source = new EventSource(`${SERVER_ADDRESS}/events`);
@@ -67,6 +78,4 @@ source.addEventListener("state", (e) => {
   console.log(e.data);
 });
 
-function render(state) {
-  
-}
+function render(state) {}
