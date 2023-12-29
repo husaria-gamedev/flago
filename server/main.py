@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, Response
-from datetime import datetime
 
 import flask
 from dataclasses import dataclass, asdict
@@ -21,8 +20,10 @@ BASE_SIZE = 175
 PLAYER_RADIUS = 10
 PLAYER_SPEED = 100  # px/sec
 DEATH_COOLDOWN_SECONDS = 10
+SPEED_UP_COOLDOWN_SECONDS = 10
+SPEED_UP_DURATION_SECONDS = 10
 
-TICS_PER_SECOND = 30
+TICS_PER_SECOND = 20
 
 TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
@@ -35,6 +36,7 @@ class Player:
     x: float
     y: float
     died_at: float | None
+    speed_up_at: float | None
     has_flag: bool
     team: str
     name: str
@@ -45,6 +47,7 @@ class Player:
 class State:
     players: list[Player]
     points: dict
+    server_time: float | None
 
 
 state = State([], {TEAM_RED: 0, TEAM_BLUE: 0})
@@ -52,6 +55,7 @@ state = State([], {TEAM_RED: 0, TEAM_BLUE: 0})
 
 def game_loop():
     while True:
+        state.server_time = time.time()
         for i in range(len(state.players)):
             move_player(state.players[i])
 
@@ -84,7 +88,7 @@ def game_loop():
                 break
 
         broadcast_state(state)
-        time.sleep(1 / TICS_PER_SECOND)
+        time.sleep(1 / TICS_PER_SECOND - (time.time() - state.server_time))
 
 
 def reset_map():
@@ -100,7 +104,11 @@ def has_someone_flag(team: str) -> bool:
 
 
 def move_player(p: Player) -> None:
-    distance_per_tick = PLAYER_SPEED / TICS_PER_SECOND
+    speed_modifier = 1
+    if p.speed_up_at and state.server_time - p.speed_up_at < SPEED_UP_DURATION_SECONDS:
+        speed_modifier = 1.5
+
+    distance_per_tick = speed_modifier * PLAYER_SPEED / TICS_PER_SECOND
     p.x += math.cos(p.direction) * distance_per_tick
     p.y += math.sin(p.direction) * distance_per_tick
     ensure_player_on_map(p)
@@ -209,6 +217,21 @@ def set_direction() -> Response:
     for i in range(len(state.players)):
         if state.players[i].name == player_name:
             state.players[i].direction = content.get("direction")
+
+    return jsonify({"ok": True})
+
+
+@app.route("/speed-up", methods=["POST"])
+def speed_up() -> Response:
+    player_name = request.args.get("name")
+
+    for i in range(len(state.players)):
+        if (
+            state.players[i].name == player_name
+            and not state.players[i].speed_up_at
+            or (time.time() - state.players[i].speed_up_at) > SPEED_UP_COOLDOWN_SECONDS
+        ):
+            state.players[i].speed_up_at = time.time()
 
     return jsonify({"ok": True})
 
