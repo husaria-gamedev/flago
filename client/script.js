@@ -37,7 +37,7 @@ function chooseTeam(t) {
 function play() {
   fetch(`${SERVER_ADDRESS}/register`, {
     method: "POST",
-    body: JSON.stringify({ name, team }),
+    body: JSON.stringify({ team, name }),
     headers: { "Content-Type": "application/json" },
   });
   const width = 1000;
@@ -47,9 +47,9 @@ function play() {
     
     </canvas>
     `;
-  canvas = document.getElementById("game");
 
-  canvas.addEventListener("mousemove", (event) => {
+  canvas = document.getElementById("game");
+  function handleMouseMove(event) {
     let deltaX = event.offsetX - posX;
     let deltaY = event.offsetY - posY;
     let rad = Math.atan2(deltaY, deltaX);
@@ -58,15 +58,28 @@ function play() {
       body: JSON.stringify({ direction: rad }),
       headers: { "Content-Type": "application/json" },
     });
+  }
+  canvas.addEventListener("mousemove", (event) => {
+    let debounceTimer;
+    // Clear the existing timer if it exists
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+    // Set a new timer
+    debounceTimer = setTimeout(() => handleMouseMove(event), 500);
   });
 }
 
 const source = new EventSource(`${SERVER_ADDRESS}/events`);
 
+<<<<<<< Updated upstream
 source.addEventListener("state", (e) => {
   console.log(e.data);
 });
+=======
+source.onmessage = (event) => {
+  console.log(event);
+};
+>>>>>>> Stashed changes
 
-function render(state) {
-  
-}
+function render(state) {}
