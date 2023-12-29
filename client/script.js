@@ -91,6 +91,7 @@ function render(state) {
   context.clearRect(0, 0, canvas.width, canvas.height);
   document.getElementById("points").innerHTML = `${state.points.Red}:${state.points.Blue}`
   document.getElementById("dead").innerHTML=``;
+  let flag_in_base = {Red: true, Blue: true}
   state.players.forEach((element) => {
     if (!element.died_at) {
       
@@ -109,6 +110,7 @@ function render(state) {
         context.font = "bold 22px arial";
         context.fillStyle = "white";
         context.fillText("x", element.x-6, element.y+6);
+        flag_in_base[element.team] = false;
       }
       context.strokeStyle = element.name == name ? "white" : "#222222";
       context.lineWidth = 3;
@@ -117,4 +119,14 @@ function render(state) {
        document.getElementById("dead").innerHTML=`You are dead, respawning in 10 seconds`
     }
   });
+    if (flag_in_base.Red) {
+            context.fillStyle = "white";
+            context.font = "bold 100px arial";
+            context.fillText("X", canvas.width-70, canvas.height/2+30);
+    }
+    if (flag_in_base.Blue) {
+        context.fillStyle = "white";
+        context.font = "bold 100px arial";
+        context.fillText("X", 5, canvas.height/2+30);
+    }
 }
