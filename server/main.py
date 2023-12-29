@@ -23,6 +23,9 @@ TICS_PER_SECOND=10
 TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
 
+app = Flask(__name__)
+CORS(app) 
+
 @dataclass
 class Player:
     x: float
@@ -42,7 +45,7 @@ state = State([])
 def add_player(name, team):
     startPosY = MAP_HEIGHT / 2
     startPosX = PLAYER_RADIUS if team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS
-    state.players.append(Player(startPosX, startPosY, True, False, name, team))
+    state.players.append(Player(startPosX, startPosY, True, False, name, team, 0.))
 
 def game_loop():
     while True:
@@ -55,18 +58,6 @@ def game_loop():
         time.sleep(1 / TICS_PER_SECOND)
 
 
-
-########
-# APP
-########
-
-app = Flask(__name__)
-CORS(app) 
-
-if __name__ == "__main__":
-    thread = Thread(target=game_loop)
-    thread.start()
-    app.run()
 
 
 ########
@@ -125,3 +116,13 @@ def broadcast_state(state):
             listeners[i].put_nowait(msg)
         except queue.Full:
             del listeners[i]
+
+########
+# APP
+########
+
+
+if __name__ == "__main__":
+    thread = Thread(target=game_loop)
+    thread.start()
+    app.run()
