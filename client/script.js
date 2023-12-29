@@ -103,9 +103,9 @@ function render(state) {
         element.y + 25
       );
       if (element.has_flag) {
-        context.font = "14px";
+        context.font = "bold 22px arial";
         context.fillStyle = "white";
-        context.fillText("X", element.x-6, element.y+6);
+        context.fillText("x", element.x-6, element.y+6);
       }
       context.strokeStyle = element.name == name ? "white" : "#222222";
       context.lineWidth = 3;
