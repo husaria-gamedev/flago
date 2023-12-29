@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify, Response,send_from_directory
-from flask import send_from_directory
+from flask import Flask, request, jsonify, Response
+from datetime import datetime
 
 import flask
 from dataclasses import dataclass, asdict
@@ -20,6 +20,7 @@ BASE_SIZE = 175
 
 PLAYER_RADIUS=10
 PLAYER_SPEED=100 # px/sec
+DEATH_COOLDOWN_SECONDS=15
 
 TICS_PER_SECOND=30
 
@@ -32,7 +33,7 @@ app = Flask(__name__, static_url_path='', static_folder='../client')
 class Player:
     x: float
     y: float
-    is_alive: bool
+    died_at: datetime | None
     has_flag: bool
     team: str
     name: str
@@ -51,6 +52,9 @@ def game_loop():
 
         for i in range(len(state.players)):
             if is_dead(state.players[i]):
+                state.players[i] = datetime.now()
+            elif state.players[i].died_at != None and  (datetime.now() -state.players[i].died_at).seconds > DEATH_COOLDOWN_SECONDS: 
+                state.players[i].died_at = None
                 move_to_start(state.players[i])
 
         broadcast_state(state)
