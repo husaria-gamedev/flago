@@ -16,6 +16,7 @@ import json
 
 MAP_WIDTH=1000
 MAP_HEIGHT=500
+BASE_SIZE = 175
 
 PLAYER_RADIUS=10
 PLAYER_SPEED=100 # px/sec
@@ -72,7 +73,25 @@ def ensure_player_on_map(p: Player) -> None:
     if p.y > MAP_HEIGHT - PLAYER_RADIUS:
         p.y = MAP_HEIGHT - PLAYER_RADIUS
 
+def is_in_base(base: str, p: Player) -> bool:
+    if p.y < (MAP_HEIGHT - BASE_SIZE) / 2:
+        return False
+    if p.y > (MAP_HEIGHT + BASE_SIZE) / 2:
+        return False
+    
+    if base == TEAM_BLUE and p.x < MAP_WIDTH - BASE_SIZE / 2:
+        return False
+
+    if base == TEAM_RED and p.x > BASE_SIZE / 2:
+        return False
+
+    return True
+
 def is_on_enemy_ground(p: Player) -> bool:
+    if is_in_base(other_team(p.team), p):
+        return False
+    if is_in_base((p.team), p):
+        return True
     if p.team == TEAM_RED and p.x > MAP_WIDTH / 2:
         return True
     if p.team == TEAM_BLUE and p.x < MAP_WIDTH / 2:
@@ -95,9 +114,11 @@ def add_player(name, team):
 
 def move_to_start(p: Player) -> None:
 
-    p.x = PLAYER_RADIUS if p.team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS
+    p.x = PLAYER_RADIUS + BASE_SIZE if p.team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS - BASE_SIZE
     p.y = MAP_HEIGHT / 2
 
+def other_team(team: str) -> str:
+    return TEAM_RED if team == TEAM_BLUE else TEAM_BLUE
 
 
 ########
