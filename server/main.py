@@ -33,7 +33,7 @@ app = Flask(__name__, static_url_path='', static_folder='../client')
 class Player:
     x: float
     y: float
-    died_at: datetime | None
+    died_at: float | None
     has_flag: bool
     team: str
     name: str
@@ -42,6 +42,7 @@ class Player:
 @dataclass
 class State:
     players: list[Player]
+
 
 state = State([])
 
@@ -52,8 +53,8 @@ def game_loop():
 
         for i in range(len(state.players)):
             if is_dead(state.players[i]):
-                state.players[i] = datetime.now()
-            elif state.players[i].died_at != None and  (datetime.now() -state.players[i].died_at).seconds > DEATH_COOLDOWN_SECONDS: 
+                state.players[i].died_at = time.time()
+            elif state.players[i].died_at != None and  (time.time() - state.players[i].died_at) > DEATH_COOLDOWN_SECONDS: 
                 state.players[i].died_at = None
                 move_to_start(state.players[i])
 
@@ -104,7 +105,7 @@ def is_on_enemy_ground(p: Player) -> bool:
 
 def is_dead(p: Player) -> bool:
     for o in state.players:
-        if not is_on_enemy_ground(p) or p.team == o.team :
+        if not is_on_enemy_ground(p) or p.team == o.team or o.died_at == None:
             continue
         dist_sqare = (p.x - o.x) ** 2 + (p.y - o.y) ** 2
         if dist_sqare < ((PLAYER_RADIUS * 2) ** 2):
@@ -112,7 +113,7 @@ def is_dead(p: Player) -> bool:
     return False
 
 def add_player(name, team):
-    player = Player(0, 0, True, False, team, name,  0.)
+    player = Player(0, 0, None, False, team, name,  0.)
     move_to_start(player)
     state.players.append(player)
 
@@ -190,4 +191,4 @@ def broadcast_state(state):
 if __name__ == "__main__":
     thread = Thread(target=game_loop)
     thread.start()
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0",debug=True)
