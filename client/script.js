@@ -1,7 +1,7 @@
 const APP_CONTAINER = document.getElementById("app");
 let posX = 50;
 let posY = 50;
-let name, team, canvas;
+let name, team, canvas, state;
 APP_CONTAINER.innerHTML = `
 <img src="assets/logo.png" style="width: 250px;"/><br/>
 <input required placeholder="Type your name" type="text" id="username"/><br/>
@@ -53,7 +53,7 @@ function play() {
     rad = 0;
   function handleMouseMove(event) {
     if (rad != direction) {
-      direction = rad
+      direction = rad;
       fetch(`/set-direction?name=${name}`, {
         method: "POST",
         body: JSON.stringify({ direction }),
@@ -61,10 +61,16 @@ function play() {
       });
     }
   }
+  
   canvas.addEventListener("mousemove", (event) => {
-    let deltaX = event.offsetX - posX;
-    let deltaY = event.offsetY - posY;
-    rad = Math.atan2(deltaY, deltaX);
+    if (state)
+    state.players.forEach((element) => {
+      if (element.name == name) {
+        let deltaX = event.offsetX - element.x;
+        let deltaY = event.offsetY - element.y;
+        rad = Math.atan2(deltaY, deltaX);
+      }
+    });
   });
   setInterval(handleMouseMove, 100);
 }
@@ -72,17 +78,18 @@ function play() {
 const source = new EventSource(`/events`);
 
 source.addEventListener("state", (e) => {
-  render(JSON.parse(e.data))
+  render(JSON.parse(e.data));
+  state = JSON.parse(e.data);
+  console.log(state)
   console.log(JSON.parse(e.data));
 });
 
 function render(state) {
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
-  
-  state.players.forEach(element => {
+
+  state.players.forEach((element) => {
     context.rect(element.x, element.y, 10, 10);
     context.fill();
   });
-  
 }
