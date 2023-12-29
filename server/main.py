@@ -17,10 +17,10 @@ import json
 MAP_WIDTH=1000
 MAP_HEIGHT=500
 
-PLAYER_RADIUS=5
-PLAYER_SPEED=10 # px/sec
+PLAYER_RADIUS=10
+PLAYER_SPEED=100 # px/sec
 
-TICS_PER_SECOND=10
+TICS_PER_SECOND=30
 
 TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
@@ -141,4 +141,4 @@ def broadcast_state(state):
 if __name__ == "__main__":
     thread = Thread(target=game_loop)
     thread.start()
-    app.run()
+    app.run(host="0.0.0.0")
