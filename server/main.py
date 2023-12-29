@@ -48,6 +48,10 @@ def game_loop():
         for i in range(len(state.players)):
             move_player(state.players[i])
 
+        for i in range(len(state.players)):
+            if is_dead(state.players[i]):
+                move_to_start(state.players[i])
+
         broadcast_state(state)
         time.sleep(1 / TICS_PER_SECOND)
 
@@ -68,11 +72,31 @@ def ensure_player_on_map(p: Player) -> None:
     if p.y > MAP_HEIGHT - PLAYER_RADIUS:
         p.y = MAP_HEIGHT - PLAYER_RADIUS
 
-def add_player(name, team):
-    startPosY = MAP_HEIGHT / 2
-    startPosX = PLAYER_RADIUS if team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS
-    state.players.append(Player(startPosX, startPosY, True, False, team, name,  0.))
+def is_on_enemy_ground(p: Player) -> bool:
+    if p.team == TEAM_RED and p.x > MAP_WIDTH / 2:
+        return True
+    if p.team == TEAM_BLUE and p.x < MAP_WIDTH / 2:
+        return True
+    return False
 
+def is_dead(p: Player) -> bool:
+    for o in state.players:
+        if not is_on_enemy_ground(p) or p.team == o.team :
+            continue
+        dist_sqare = (p.x - o.x) ** 2 + (p.y - o.y) ** 2
+        if dist_sqare < ((PLAYER_RADIUS * 2) ** 2):
+            return True
+    return False
+
+def add_player(name, team):
+    player = Player(0, 0, True, False, team, name,  0.)
+    move_to_start(player)
+    state.players.append(player)
+
+def move_to_start(p: Player) -> None:
+
+    p.x = PLAYER_RADIUS if p.team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS
+    p.y = MAP_HEIGHT / 2
 
 
 
