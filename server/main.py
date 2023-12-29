@@ -54,7 +54,7 @@ def game_loop():
         for i in range(len(state.players)):
             if is_dead(state.players[i]):
                 state.players[i].died_at = time.time()
-            elif state.players[i].died_at != None and  (time.time() - state.players[i].died_at) > DEATH_COOLDOWN_SECONDS: 
+            elif state.players[i].died_at != None and (time.time() - state.players[i].died_at) > DEATH_COOLDOWN_SECONDS: 
                 state.players[i].died_at = None
                 move_to_start(state.players[i])
 
@@ -104,10 +104,13 @@ def is_on_enemy_ground(p: Player) -> bool:
     return False
 
 def is_dead(p: Player) -> bool:
+    if (not is_on_enemy_ground(p)):
+        return False
     for o in state.players:
-        if not is_on_enemy_ground(p) or p.team == o.team or o.died_at == None:
+        if p.team == o.team or o.died_at != None:
             continue
         dist_sqare = (p.x - o.x) ** 2 + (p.y - o.y) ** 2
+
         if dist_sqare < ((PLAYER_RADIUS * 2) ** 2):
             return True
     return False
