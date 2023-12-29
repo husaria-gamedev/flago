@@ -74,7 +74,7 @@ function play() {
 const source = new EventSource(`/events`);
 
 source.addEventListener("state", (e) => {
-  console.log(e.data);
+  console.log(JSON.parse(e.data));
 });
 
 function render(state) {}

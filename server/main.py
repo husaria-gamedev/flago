@@ -7,6 +7,7 @@ import queue
 import time
 from threading import Thread
 import math
+import json
 
 
 ########
@@ -24,7 +25,7 @@ TICS_PER_SECOND=10
 TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='../client')
 
 @dataclass
 class Player:
@@ -124,7 +125,7 @@ def listen():
     return flask.Response(stream(), mimetype='text/event-stream')
 
 def broadcast_state(state):
-    msg = format_sse(data=asdict(state), event="state")
+    msg = format_sse(data=json.dumps(asdict(state)), event="state")
 
     for i in reversed(range(len(listeners))):
         try:
