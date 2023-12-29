@@ -154,6 +154,8 @@ def is_on_enemy_ground(p: Player) -> bool:
 
 
 def is_dead(p: Player) -> bool:
+    if p.died_at:
+        return False
     if not is_on_enemy_ground(p):
         return False
     for o in state.players:
