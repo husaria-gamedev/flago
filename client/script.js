@@ -95,7 +95,7 @@ function render(state) {
       context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
       context.fillStyle = element.team;
       context.fill();
-      context.strokeStyle = element.name == name ? "yellow" : "black";
+      context.strokeStyle = element.name == name ? "white" : "#222222";
       
       context.lineWidth = 3;
         context.stroke();

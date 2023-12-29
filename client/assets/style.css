@@ -45,8 +45,9 @@ input {
 }
 .team.active img {
   transform: scale(1.5);
-  border: inset 2px;
-  background-color: #c3c3c3;
+}
+.team.active {
+  background-color: #333333;
 }
 .flag_container {
   display: flex;
