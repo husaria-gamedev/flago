@@ -42,9 +42,10 @@ class Player:
 @dataclass
 class State:
     players: list[Player]
+    points: dict
 
 
-state = State([])
+state = State([], {TEAM_RED: 0, TEAM_BLUE: 0})
 
 def game_loop():
     while True:
@@ -56,10 +57,45 @@ def game_loop():
                 state.players[i].died_at = time.time()
             elif state.players[i].died_at != None and (time.time() - state.players[i].died_at) > DEATH_COOLDOWN_SECONDS: 
                 state.players[i].died_at = None
-                move_to_start(state.players[i])
+                reset_player(state.players[i])
+        
+        for i in range(len(state.players)):
+            if is_dead(state.players[i]):
+                state.players[i].died_at = time.time()
+                state.players[i].has_flag = False
+            elif state.players[i].died_at != None and (time.time() - state.players[i].died_at) > DEATH_COOLDOWN_SECONDS: 
+                state.players[i].died_at = None
+                reset_player(state.players[i])
+            
+        has_flag = {
+            TEAM_RED: has_someone_flag(TEAM_RED),
+            TEAM_BLUE: has_someone_flag(TEAM_BLUE)
+        }
+
+        for p in state.players:
+            if not has_flag[p.team] and is_in_base(other_team(p.team), p):
+                has_flag[p.team] = True
+                p.has_flag = True
+
+        for p in state.players:
+            if p.has_flag and is_in_base(p.team, p):
+                state.points[p.team] += 1
+                reset_map()
+                break
 
         broadcast_state(state)
         time.sleep(1 / TICS_PER_SECOND)
+
+def reset_map():
+    for p in state.players:
+        reset_player(p)
+
+
+def has_someone_flag(team: str) -> bool:
+    for p in state.players:
+        if p.team == team and p.has_flag:
+            return True
+    return False
 
 def move_player(p: Player) -> None:
     distance_per_tick = PLAYER_SPEED / TICS_PER_SECOND
@@ -117,13 +153,14 @@ def is_dead(p: Player) -> bool:
 
 def add_player(name, team):
     player = Player(0, 0, None, False, team, name,  0.)
-    move_to_start(player)
+    reset_player(player)
     state.players.append(player)
 
-def move_to_start(p: Player) -> None:
-
+def reset_player(p: Player) -> None:
     p.x = PLAYER_RADIUS + BASE_SIZE if p.team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS - BASE_SIZE
     p.y = MAP_HEIGHT / 2
+    p.has_flag = False
+    p.died_at = None
 
 def other_team(team: str) -> str:
     return TEAM_RED if team == TEAM_BLUE else TEAM_BLUE
