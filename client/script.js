@@ -61,16 +61,16 @@ function play() {
       });
     }
   }
-  
+
   canvas.addEventListener("mousemove", (event) => {
     if (state)
-    state.players.forEach((element) => {
-      if (element.name == name) {
-        let deltaX = event.offsetX - element.x;
-        let deltaY = event.offsetY - element.y;
-        rad = Math.atan2(deltaY, deltaX);
-      }
-    });
+      state.players.forEach((element) => {
+        if (element.name == name) {
+          let deltaX = event.offsetX - element.x;
+          let deltaY = event.offsetY - element.y;
+          rad = Math.atan2(deltaY, deltaX);
+        }
+      });
   });
   setInterval(handleMouseMove, 100);
 }
@@ -80,7 +80,7 @@ const source = new EventSource(`/events`);
 source.addEventListener("state", (e) => {
   render(JSON.parse(e.data));
   state = JSON.parse(e.data);
-  console.log(state)
+  console.log(state);
   console.log(JSON.parse(e.data));
 });
 
@@ -89,9 +89,16 @@ function render(state) {
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   state.players.forEach((element) => {
-    context.beginPath();
-    context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
-    context.fillStyle = element.team;
-    context.fill()
+    if (!element.died_at) {
+      
+      context.beginPath();
+      context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
+      context.fillStyle = element.team;
+      context.fill();
+      context.strokeStyle = element.name == name ? "yellow" : "black";
+      
+      context.lineWidth = 3;
+        context.stroke();
+    }
   });
 }
