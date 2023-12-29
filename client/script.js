@@ -92,6 +92,7 @@ function render(state) {
   document.getElementById("points").innerHTML = `${state.points.Red}:${state.points.Blue}`
   state.players.forEach((element) => {
     if (!element.died_at) {
+      document.getElementById("dead").innerHTML=``
       context.beginPath();
       context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
       context.fillStyle = element.team;
