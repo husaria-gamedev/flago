@@ -90,7 +90,7 @@ function render(state) {
 
   state.players.forEach((element) => {
     context.beginPath();
-    context.arc(element.x, element.y, 5, 0, 2 * Math.PI);
+    context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
     context.fillStyle = element.team;
     context.fill()
   });
