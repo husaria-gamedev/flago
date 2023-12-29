@@ -167,8 +167,13 @@ def other_team(team: str) -> str:
 @app.route("/register", methods=["POST"])
 def register() -> Response:
     content = request.json
-    assert content.get("team") in [TEAM_RED, TEAM_BLUE], "Team has to be either Red or Blue"
-    assert content.get("name"), "Name cannot be empty"
+    if content.get("team") not in [TEAM_RED, TEAM_BLUE]:
+        return "Team has to be either Red or Blue", 400
+
+    if not content.get("name"):
+        return "Name cannot be empty", 400
+    if content.get("name") in [p.name for p in state.players]:
+        return "Name already taken", 400
 
     add_player(content.get("name"), content.get("team"))
 
