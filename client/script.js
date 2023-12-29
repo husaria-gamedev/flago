@@ -43,6 +43,7 @@ function play() {
   const height = 500;
 
   APP_CONTAINER.innerHTML = `
+    <div id="points">0:0</div>
     <canvas id="game" width="${width}px" height="${height}px" style="background-image: url('assets/map.jpg');">
     
     </canvas>
@@ -87,18 +88,27 @@ source.addEventListener("state", (e) => {
 function render(state) {
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
-
+  document.getElementById("points").innerHTML = `${state.points.Red}:${state.points.Blue}`
   state.players.forEach((element) => {
     if (!element.died_at) {
-      
       context.beginPath();
       context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
       context.fillStyle = element.team;
       context.fill();
+      context.fillStyle = "black";
+      context.font = "20px serif";
+      context.fillText(
+        element.name,
+        element.x - context.measureText(element.name).width / 2,
+        element.y + 25
+      );
+      if (element.has_flag) {
+        context.font = "14px";
+        context.fillText("X", element.x-6, element.y+6);
+      }
       context.strokeStyle = element.name == name ? "white" : "#222222";
-      
       context.lineWidth = 3;
-        context.stroke();
+      context.stroke();
     }
   });
 }
