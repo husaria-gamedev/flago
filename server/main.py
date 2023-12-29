@@ -228,9 +228,8 @@ def speed_up() -> Response:
     player_name = request.args.get("name")
 
     for i in range(len(state.players)):
-        if (
-            state.players[i].name == player_name
-            and not state.players[i].speed_up_at
+        if state.players[i].name == player_name and (
+            state.players[i].speed_up_at is None
             or (time.time() - state.players[i].speed_up_at) > SPEED_UP_COOLDOWN_SECONDS
         ):
             state.players[i].speed_up_at = time.time()
