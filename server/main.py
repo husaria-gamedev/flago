@@ -20,7 +20,7 @@ BASE_SIZE = 175
 
 PLAYER_RADIUS=10
 PLAYER_SPEED=100 # px/sec
-DEATH_COOLDOWN_SECONDS=15
+DEATH_COOLDOWN_SECONDS=10
 
 TICS_PER_SECOND=30
 
@@ -54,15 +54,9 @@ def game_loop():
 
         for i in range(len(state.players)):
             if is_dead(state.players[i]):
-                state.players[i].died_at = time.time()
-            elif state.players[i].died_at != None and (time.time() - state.players[i].died_at) > DEATH_COOLDOWN_SECONDS: 
-                state.players[i].died_at = None
-                reset_player(state.players[i])
-        
-        for i in range(len(state.players)):
-            if is_dead(state.players[i]):
-                state.players[i].died_at = time.time()
+                state.players[i].died_at = time.time()                
                 state.players[i].has_flag = False
+
             elif state.players[i].died_at != None and (time.time() - state.players[i].died_at) > DEATH_COOLDOWN_SECONDS: 
                 state.players[i].died_at = None
                 reset_player(state.players[i])
