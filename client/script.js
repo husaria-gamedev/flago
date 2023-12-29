@@ -58,6 +58,12 @@ function play() {
     <canvas id="game" width="${width}px" height="${height}px" style="background-image: url('assets/map.jpg');">
     
     </canvas>
+    <div id="instructions">
+    Move mouse to move.<br>
+    Capture the flag and bring it to the base on your side.<br>
+    Be careful, enemies can kill you on their ground color.<br>
+    Press space to activate a speed up.<br>
+    </div>
     <div id="speed_at"></div>
     <div id="dead"></div>
     `;

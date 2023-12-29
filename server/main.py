@@ -7,7 +7,7 @@ import time
 from threading import Thread
 import math
 import json
-
+import re
 
 ########
 # GAME
@@ -23,7 +23,7 @@ DEATH_COOLDOWN_SECONDS = 10
 SPEED_UP_COOLDOWN_SECONDS = 10
 SPEED_UP_DURATION_SECONDS = 1
 
-TICS_PER_SECOND = 20
+TICS_PER_SECOND = 30
 
 TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
@@ -183,6 +183,7 @@ def reset_player(p: Player) -> None:
     p.y = MAP_HEIGHT / 2
     p.has_flag = False
     p.died_at = None
+    p.speed_up_at = None
 
 
 def other_team(team: str) -> str:
@@ -204,6 +205,10 @@ def register() -> Response:
         return "Name cannot be empty", 400
     if content.get("name") in [p.name for p in state.players]:
         return "Name already taken", 400
+    if len(content.get("name")) > 10:
+        return "Name too long", 400
+    if not re.match("^[a-zA-Z0-9]+$", content.get("name")):
+        return "Only alphanumerical characters are allowed", 400
 
     add_player(content.get("name"), content.get("team"))
 
@@ -236,6 +241,16 @@ def speed_up() -> Response:
 
     return jsonify({"ok": True})
 
+@app.route("/kick", methods=["POST"])
+def kick() -> Response:
+    player_name = request.args.get("name")
+
+    for i in range(len(state.players)):
+        if state.players[i].name == player_name:
+            del state.players[i]
+            break
+
+    return jsonify({"ok": True})
 
 ########
 # EVENTS
