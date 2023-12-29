@@ -59,3 +59,8 @@ input {
   text-align: center;
   font-size: 32px;
 }
+#dead {
+  position: absolute;
+  text-align: center;
+  font-size: 100px;
+}

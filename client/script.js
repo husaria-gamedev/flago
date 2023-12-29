@@ -47,6 +47,7 @@ function play() {
     <canvas id="game" width="${width}px" height="${height}px" style="background-image: url('assets/map.jpg');">
     
     </canvas>
+    <div id="dead"></div>
     `;
 
   canvas = document.getElementById("game");
@@ -110,6 +111,8 @@ function render(state) {
       context.strokeStyle = element.name == name ? "white" : "#222222";
       context.lineWidth = 3;
       context.stroke();
+    } else if (element.name == name){
+       document.getElementById("dead").innerHTML=`You are dead, respawning in 10 seconds`
     }
   });
 }
