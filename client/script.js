@@ -79,6 +79,7 @@ source.addEventListener("state", (e) => {
 function render(state) {
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
+  
   state.players.forEach(element => {
     context.rect(element.x, element.y, 10, 10);
     context.fill();
