@@ -50,7 +50,7 @@ class State:
     server_time: float | None
 
 
-state = State([], {TEAM_RED: 0, TEAM_BLUE: 0})
+state = State([], {TEAM_RED: 0, TEAM_BLUE: 0},None)
 
 
 def game_loop():
@@ -169,7 +169,7 @@ def is_dead(p: Player) -> bool:
 
 
 def add_player(name, team):
-    player = Player(0, 0, None, False, team, name, 0.0)
+    player = Player(0, 0, None, None, False, team, name, 0.0)
     reset_player(player)
     state.players.append(player)
 
