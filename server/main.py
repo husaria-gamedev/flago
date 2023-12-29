@@ -133,11 +133,6 @@ def broadcast_state(state):
         except queue.Full:
             del listeners[i]
 
-
-@app.route('/<path:path>')
-def send_report(path):
-    return send_from_directory('client', path)
-
 ########
 # APP
 ########
