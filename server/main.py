@@ -5,6 +5,8 @@ from dataclasses import dataclass
 import queue
 import time
 from threading import Thread
+import math
+
 
 ########
 # GAME
@@ -14,6 +16,9 @@ MAP_WIDTH=1000
 MAP_HEIGHT=500
 
 PLAYER_RADIUS=5
+PLAYER_SPEED=10 # px/sec
+
+TICS_PER_SECOND=10
 
 TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
@@ -41,8 +46,13 @@ def add_player(name, team):
 
 def game_loop():
     while True:
+        distance_per_tick = PLAYER_SPEED / TICS_PER_SECOND
+        for i in range(len(state.players)):
+            state.players[i].x += math.cos(state.players[i].direction) * distance_per_tick
+            
+            state.players[i].y += math.sin(state.players[i].direction) * distance_per_tick
         broadcast_state(state)
-        time.sleep(0.1)
+        time.sleep(1 / TICS_PER_SECOND)
 
 
 
