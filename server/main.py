@@ -6,6 +6,7 @@ import queue
 import time
 from threading import Thread
 import math
+import json
 
 
 ########
@@ -124,7 +125,7 @@ def listen():
     return flask.Response(stream(), mimetype='text/event-stream')
 
 def broadcast_state(state):
-    msg = format_sse(data=asdict(state), event="state")
+    msg = format_sse(data=json.dumps(asdict(state)), event="state")
 
     for i in reversed(range(len(listeners))):
         try:
