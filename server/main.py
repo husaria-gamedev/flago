@@ -24,7 +24,7 @@ TICS_PER_SECOND=10
 TEAM_RED = "Red"
 TEAM_BLUE = "Blue"
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='../client')
 CORS(app) 
 
 @dataclass
