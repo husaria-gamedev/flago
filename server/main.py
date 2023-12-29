@@ -39,20 +39,35 @@ class State:
 
 state = State([])
 
+def game_loop():
+    while True:
+        for i in range(len(state.players)):
+            move_player(state.players[i])
+
+        broadcast_state(state)
+        time.sleep(1 / TICS_PER_SECOND)
+
+def move_player(p: Player) -> None:
+    distance_per_tick = PLAYER_SPEED / TICS_PER_SECOND
+    p.x += math.cos(p.direction) * distance_per_tick
+    p.y += math.sin(p.direction) * distance_per_tick
+    ensure_player_on_map(p)
+
+def ensure_player_on_map(p: Player) -> None:
+    if p.x < PLAYER_RADIUS:
+        p.x = PLAYER_RADIUS
+    if p.x > MAP_WIDTH - PLAYER_RADIUS:
+        p.x = MAP_WIDTH - PLAYER_RADIUS
+
+    if p.y < PLAYER_RADIUS:
+        p.y = PLAYER_RADIUS
+    if p.y > MAP_HEIGHT - PLAYER_RADIUS:
+        p.y = MAP_HEIGHT - PLAYER_RADIUS
+
 def add_player(name, team):
     startPosY = MAP_HEIGHT / 2
     startPosX = PLAYER_RADIUS if team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS
     state.players.append(Player(startPosX, startPosY, True, False, name, team))
-
-def game_loop():
-    while True:
-        distance_per_tick = PLAYER_SPEED / TICS_PER_SECOND
-        for i in range(len(state.players)):
-            state.players[i].x += math.cos(state.players[i].direction) * distance_per_tick
-            
-            state.players[i].y += math.sin(state.players[i].direction) * distance_per_tick
-        broadcast_state(state)
-        time.sleep(1 / TICS_PER_SECOND)
 
 
 
