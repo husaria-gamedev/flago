@@ -61,12 +61,11 @@ function play() {
   });
 }
 
-const source = new EventSource(`${SERVER_ADDRESS}}/events`);
+const source = new EventSource(`${SERVER_ADDRESS}/events`);
 
-source.onmessage = (event) => {
-
-  console.log(event);
-};
+source.addEventListener("state", (e) => {
+  console.log(e.data);
+});
 
 function render(state) {
   

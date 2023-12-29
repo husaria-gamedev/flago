@@ -70,7 +70,7 @@ def ensure_player_on_map(p: Player) -> None:
 def add_player(name, team):
     startPosY = MAP_HEIGHT / 2
     startPosX = PLAYER_RADIUS if team == TEAM_RED else MAP_WIDTH - PLAYER_RADIUS
-    state.players.append(Player(startPosX, startPosY, True, False, name, team, 0.))
+    state.players.append(Player(startPosX, startPosY, True, False, team, name,  0.))
 
 
 
