@@ -72,14 +72,8 @@ function play() {
 
 const source = new EventSource(`${SERVER_ADDRESS}/events`);
 
-<<<<<<< Updated upstream
 source.addEventListener("state", (e) => {
   console.log(e.data);
 });
-=======
-source.onmessage = (event) => {
-  console.log(event);
-};
->>>>>>> Stashed changes
 
 function render(state) {}
