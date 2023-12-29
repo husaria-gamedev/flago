@@ -90,9 +90,10 @@ function render(state) {
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
   document.getElementById("points").innerHTML = `${state.points.Red}:${state.points.Blue}`
+  document.getElementById("dead").innerHTML=``;
   state.players.forEach((element) => {
     if (!element.died_at) {
-      document.getElementById("dead").innerHTML=``
+      
       context.beginPath();
       context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
       context.fillStyle = element.team;
