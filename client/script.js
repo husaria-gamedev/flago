@@ -1,5 +1,7 @@
 const appContainer = document.getElementById("app");
-let name, team;
+let posX = 50;
+let posY = 50;
+let name, team, canvas;
 appContainer.innerHTML = `
 <img src="assets/logo.png" style="width: 250px;"/><br/>
 <input placeholder="Type your name" type="text" id="username"/><br/>
@@ -37,7 +39,26 @@ function play() {
     body: JSON.stringify({ name, team }),
     headers: { "Content-Type": "application/json" },
   });
-  console.log(name, team);
+  const width = 1000;
+  const height = 500;
+  appContainer.innerHTML = `
+    <canvas id="game" width="${width}px" height="${height}px" style="background: white;">
+    
+    </canvas>
+    `;
+  canvas = document.getElementById("game");
+  console.log(canvas);
+  canvas.addEventListener("mousemove", (event) => {
+    let deltaX = event.offsetX - posX;
+    let deltaY = event.offsetY - posY;
+    let rad = Math.atan2(deltaY, deltaX);
+    console.log(rad)
+    fetch(`http://127.0.0.1:5000/set-direction?name=${name}`, {
+      method: "POST",
+      body: JSON.stringify({ direction: rad }),
+      headers: { "Content-Type": "application/json" },
+    });
+  });
 }
 
 const source = new EventSource("http://localhost:5000/events");
