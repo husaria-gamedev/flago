@@ -43,7 +43,7 @@ function play() {
   const height = 500;
 
   APP_CONTAINER.innerHTML = `
-    <canvas id="game" width="${width}px" height="${height}px" style="background: white;">
+    <canvas id="game" width="${width}px" height="${height}px" style="background-image: url('assets/map.jpg');">
     
     </canvas>
     `;
