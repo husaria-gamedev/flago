@@ -42,6 +42,7 @@ function play() {
   });
   const width = 1000;
   const height = 500;
+
   APP_CONTAINER.innerHTML = `
     <canvas id="game" width="${width}px" height="${height}px" style="background: white;">
     
@@ -49,25 +50,26 @@ function play() {
     `;
 
   canvas = document.getElementById("game");
+  let direction = 0, rad = 0;
   function handleMouseMove(event) {
-    let deltaX = event.offsetX - posX;
-    let deltaY = event.offsetY - posY;
-    let rad = Math.atan2(deltaY, deltaX);
-    fetch(`${SERVER_ADDRESS}/set-direction?name=${name}`, {
-      method: "POST",
-      body: JSON.stringify({ direction: rad }),
-      headers: { "Content-Type": "application/json" },
-    });
+    if (rad != direction) {
+      direction = rad
+      fetch(`${SERVER_ADDRESS}/set-direction?name=${name}`, {
+        method: "POST",
+        body: JSON.stringify({ direction }),
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    
+  
   }
   canvas.addEventListener("mousemove", (event) => {
-    let debounceTimer;
-    // Clear the existing timer if it exists
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-    }
-    // Set a new timer
-    debounceTimer = setTimeout(() => handleMouseMove(event), 500);
+    let deltaX = event.offsetX - posX;
+    let deltaY = event.offsetY - posY;
+    rad = Math.atan2(deltaY, deltaX);
+
   });
+  setInterval(handleMouseMove, 1000)
 }
 
 const source = new EventSource(`${SERVER_ADDRESS}/events`);
