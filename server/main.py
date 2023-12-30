@@ -8,6 +8,7 @@ from threading import Thread
 import math
 import json
 import re
+import random
 
 ########
 # GAME
@@ -203,8 +204,8 @@ def reset_player(p: Player) -> None:
         PLAYER_RADIUS + BASE_SIZE
         if p.team == TEAM_RED
         else MAP_WIDTH - PLAYER_RADIUS - BASE_SIZE
-    )
-    p.y = MAP_HEIGHT / 2
+    ) + random.random() * 4 * PLAYER_RADIUS
+    p.y = MAP_HEIGHT / 2 + random.random() * 6 * PLAYER_RADIUS
     p.has_flag = False
     p.died_at = None
     p.speed_up_at = None
