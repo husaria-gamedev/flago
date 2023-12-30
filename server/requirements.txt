@@ -1,5 +1,4 @@
-flask_socketio
-flask_cors
+flask
 black
 flake8
 mypy

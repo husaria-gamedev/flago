@@ -50,14 +50,13 @@ class State:
     server_time: float | None
 
 
-state = State([], {TEAM_RED: 0, TEAM_BLUE: 0},None)
+state = State([], {TEAM_RED: 0, TEAM_BLUE: 0}, None)
 
 
 def game_loop():
     while True:
         state.server_time = time.time()
-        for i in range(len(state.players)):
-            move_player(state.players[i])
+        update_positions(state.players)
 
         for i in range(len(state.players)):
             if is_dead(state.players[i]):
@@ -104,6 +103,8 @@ def has_someone_flag(team: str) -> bool:
 
 
 def move_player(p: Player) -> None:
+    if p.died_at:
+        return
     speed_modifier = 1
     if p.speed_up_at and state.server_time - p.speed_up_at < SPEED_UP_DURATION_SECONDS:
         speed_modifier = 1.5
@@ -112,6 +113,29 @@ def move_player(p: Player) -> None:
     p.x += math.cos(p.direction) * distance_per_tick
     p.y += math.sin(p.direction) * distance_per_tick
     ensure_player_on_map(p)
+
+
+def are_overlapping(player1, player2):
+    distance2 = (player1.x - player2.x) ** 2 + (player1.y - player2.y) ** 2
+    return distance2 < (2 * PLAYER_RADIUS) ** 2
+
+
+def update_positions(players):
+    for i, player in enumerate(players):
+        for j, other_player in enumerate(players):
+            if i != j and are_overlapping(player, other_player):
+                bounce(player, other_player)
+        move_player(player)
+
+
+def bounce(player, other_player):
+    # Calculate the angle of the line connecting the centers
+    dx = other_player.x - player.x
+    dy = other_player.y - player.y
+    collision_angle = math.atan2(dy, dx)
+
+    # Reverse direction along this line
+    player.direction = -collision_angle
 
 
 def ensure_player_on_map(p: Player) -> None:
@@ -241,6 +265,7 @@ def speed_up() -> Response:
 
     return jsonify({"ok": True})
 
+
 @app.route("/kick", methods=["POST"])
 def kick() -> Response:
     player_name = request.args.get("name")
@@ -251,6 +276,7 @@ def kick() -> Response:
             break
 
     return jsonify({"ok": True})
+
 
 ########
 # EVENTS

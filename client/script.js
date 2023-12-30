@@ -123,28 +123,35 @@ function render(state) {
     document.getElementById("dead").innerHTML = ``;
     let flag_in_base = { Red: true, Blue: true };
     state.players.forEach((element) => {
-      if (!element.died_at) {
-        context.beginPath();
-        context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
-        context.fillStyle = element.team;
-        context.fill();
-        context.fillStyle = "black";
-        context.font = "20px serif";
-        context.fillText(
-          element.name,
-          element.x - context.measureText(element.name).width / 2,
-          element.y + 25
-        );
-        if (element.has_flag) {
-          context.font = "bold 22px arial";
-          context.fillStyle = "white";
-          context.fillText("x", element.x - 6, element.y + 6);
-          flag_in_base[element.team] = false;
-        }
-        context.strokeStyle = element.name == name ? "white" : "#222222";
-        context.lineWidth = 3;
-        context.stroke();
-      } else if (element.name == name) {
+
+      context.beginPath();
+      context.arc(element.x, element.y, 10, 0, 2 * Math.PI);
+      context.fillStyle = element.team;
+      if (element.died_at) {
+        if (element.team == "Red")
+          context.fillStyle = "#916a71"
+        else
+          context.fillStyle = "#6b6a91"
+      }
+      context.fill();
+      context.fillStyle = "black";
+      context.font = "20px serif";
+      context.fillText(
+        element.name,
+        element.x - context.measureText(element.name).width / 2,
+        element.y + 25
+      );
+      if (element.has_flag) {
+        context.font = "bold 22px arial";
+        context.fillStyle = "white";
+        context.fillText("x", element.x - 6, element.y + 6);
+        flag_in_base[element.team] = false;
+      }
+      context.strokeStyle = element.name == name ? "white" : "#222222";
+      context.lineWidth = 3;
+      context.stroke();
+
+      if (element.name == name && element.died_at) {
         document.getElementById(
           "dead"
         ).innerHTML = `You are dead, respawning in ${DEATH_COOLDOWN_SECONDS - Math.floor(state.server_time - element.died_at)} seconds`;
